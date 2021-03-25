@@ -92,17 +92,9 @@ public class Scapegoat {
         // First you start from the node, climbing to the root.
         // Check if the current node satisfy alpha-weight-balanced property.
         // return the first node which doesn't satisfy the property.
-        while(node != null)
-        {
-            int threshold_size = (int)(threshold * size(node));
-            if( size(node.left) > threshold_size ||
-                size(node.right) > threshold_size ) 
-                break;
-
+        while(size(node) <= threshold * size(node.parent) )
             node = node.parent;
-        }
-        // -----------------------
-
+        
         return node;
         // -----------------------
     }
@@ -177,6 +169,12 @@ public class Scapegoat {
         return h;
     }
 
+    private static final int Log32(int Val)
+    {
+        final double lg32=2.4663034623764317;
+        return (int)Math.ceil(lg32*Math.log(Val));
+    }
+
     /**
      *
      * This function adds an element into the tree.
@@ -195,7 +193,7 @@ public class Scapegoat {
             // find the parent node of the target node
             // you can try to use the find function here, however, since you also need the depth value of the node,
             // I strongly recommend you rewrite the find function here.
-
+            
             Node u = new Node(data, null, null, null);
             Node w = root;
             
@@ -203,7 +201,7 @@ public class Scapegoat {
             int d = 0;
 
             do {
-                if( u.data.compareTo(w.data) < 0 )  // left insert
+                if( data.compareTo(w.data) < 0 )  // left insert
                 {
                     if( w.left == null )
                     {
@@ -216,7 +214,7 @@ public class Scapegoat {
                         w = w.left;
                     }
                 }
-                else if( u.data.compareTo(w.data) > 0 )
+                else if( data.compareTo(w.data) > 0 )
                 {
                     if( w.right == null )
                     {
@@ -251,16 +249,21 @@ public class Scapegoat {
             }
 
             if (d > getHeightBalanced(NodeCount)) {
+            // if (d > Log32(NodeCount)) {
                 /* depth exceeded, find scapegoat */
-                w = scapegoatNode(u);
-                // w = u.parent;
-                // while (3*size(w) <= 2*size(w.parent))
-                //     w = w.parent;
-                rebuild(w);
+                w = scapegoatNode(u.parent);
+                // if( data.a != 193 )
+                    rebuild(w.parent);
             }
 
-
             // -----------------------
+        }
+
+        int real_size = size(root);
+        if( NodeCount != real_size )
+        {
+            print_tree();
+            NodeCount = real_size;
         }
     }
 
@@ -291,13 +294,17 @@ public class Scapegoat {
         // key, then This is the
         // node to be deleted
         else {
-            NodeCount--;
-            
             // node with only one child or no child
             if (node.left == null)
+            {
+                NodeCount--;
                 return node.right;
+            }
             else if (node.right == null)
+            {
+                NodeCount--;
                 return node.left;
+            }
  
             node.data = minValue(node.right);
  
@@ -322,14 +329,21 @@ public class Scapegoat {
         // this part is the same as the BST deletion
         // You first find the succNode, then replace the target node with the succNode.
         // rebuild the tree of required
-
         root = deleteNode(root, data);
 
-        // rebuild
-        if( NodeCount <= threshold * MaxNodeCount )
+        int real_size = size(root);
+        if( NodeCount != real_size )
         {
-            root = rebuild(root);
-            // MaxNodeCount = NodeCount;
+            print_tree();
+            NodeCount = real_size;
+        }
+
+        // rebuild
+        double threshold_node_count = threshold * MaxNodeCount;
+        if( NodeCount <= threshold_node_count )
+        {            
+            root = rebuild(root);      
+            MaxNodeCount = NodeCount;
         }
     }
 
@@ -434,6 +448,23 @@ public class Scapegoat {
             }
         }
         return nodes;
+    }
+
+    private void print_tree(Node node, int depth)
+    {
+        if(node == null)
+            return;
+        print_tree(node.left, depth + 1);
+        for(int i = 0; i < depth; i++)
+        {
+            System.out.print("   ");
+        }
+        System.out.println(node.data.a);
+        print_tree(node.right, depth + 1);
+    }
+    public void print_tree()
+    {
+        print_tree(root, 0);
     }
 
 

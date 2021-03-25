@@ -86,13 +86,20 @@ public class SampleScapegoatTest {
 				tree.add(new T(Integer.parseInt(string[1])));
 			}
 			else if (string[0].equals("remove")) {
+				// if(string[1].equals("45") )
+				// {
+				// 	string[1] = "45";
+				// 	tree.print_tree();
+				// }
 				tree.remove(new T(Integer.parseInt(string[1])));
 			}
 			else if (string[0].equals("print")) {
 				String result = "preorder: " + tree.preorder(tree.root()) + "inorder: " + tree.inorder(tree.root());
 				if (! result.equals(outputs.get(cnt))) {
-					System.out.println("Result: " + result);
+					// System.out.println("Result: " + result);
 					System.out.println("Expected: " + outputs.get(cnt));
+
+					tree.print_tree();
 					
 					correct = 0;
 				}
