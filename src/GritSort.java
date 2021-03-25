@@ -127,7 +127,20 @@ public class GritSort<Item extends Comparable<Item>> {
     public HashMap<Integer, ArrayList<ArrayList<Item>>> makeBuckets(ArrayList<ArrayList<Item>> chunks) {
     	HashMap<Integer, ArrayList<ArrayList<Item>>> buckets = new HashMap<Integer, ArrayList<ArrayList<Item>>>();
     	// make buckets is a helper function. 
-    	// CHANGE THIS ACCORDING TO YOUR IMPLEMENTATION
+        // CHANGE THIS ACCORDING TO YOUR IMPLEMENTATION
+        for(int i = 0; i < chunks.size(); i++)
+        {
+            ArrayList<Item> cur = chunks.get(i);
+            int key = cur.size();
+            if( buckets.containsKey(key) )
+                buckets.get(key).add(cur);                
+            else
+            {
+                ArrayList<ArrayList<Item>> temp = new  ArrayList<ArrayList<Item>>();
+                temp.add(cur);
+                buckets.put(key, temp);   
+            }
+        }
     	
 	   	return buckets;
 	}
