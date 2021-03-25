@@ -92,6 +92,15 @@ public class Scapegoat {
         // First you start from the node, climbing to the root.
         // Check if the current node satisfy alpha-weight-balanced property.
         // return the first node which doesn't satisfy the property.
+        while(node != null)
+        {
+            int threshold_size = (int)(threshold * size(node));
+            if( size(node.left) > threshold_size ||
+                size(node.right) > threshold_size ) 
+                break;
+
+            node = node.parent;
+        }
         // -----------------------
 
         return node;
@@ -116,11 +125,55 @@ public class Scapegoat {
         // You should use recursive methods to build the new binary tree.
         // Once you get the inorder traversal, you need to set the middle one to the root first.
         // Then recursively consider the left part and the right part of the traversal.
+        List<Node> a = inorder(node);
+
+        Node p = node.parent;
+        int ns = size(node);
+        Node new_node = buildBalanced(a, 0, ns);
+
+        if(p == null )
+        {
+            root = new_node;
+            root.parent = null;
+        }
+        else if( p.right == node )
+        {
+            p.right = new_node;
+            p.right.parent = p;
+        }
+        else
+        {
+            p.left = new_node;
+            p.left.parent = p;
+        }
+
+        node = new_node;
 
         return node;
         // -----------------------
     }
 
+    protected Node buildBalanced(List<Node> a, int i, int ns) 
+    {
+        if (ns == 0)
+            return null;
+        int m = ns / 2;
+        Node mid = a.get(i + m);
+        mid.left = buildBalanced(a, i, m);
+        if (mid.left != null)
+            mid.left.parent = mid;
+        mid.right = buildBalanced(a, i + m + 1, ns - m - 1);
+        if (mid.right != null)
+            mid.right.parent = mid;
+
+        return mid;
+    }
+
+    private static final int log32(int q) 
+    {
+        final double log23 = 2.4663034623764317;
+        return (int)Math.ceil(log23*Math.log(q));
+    }
 
     /**
      *
@@ -140,6 +193,44 @@ public class Scapegoat {
             // you can try to use the find function here, however, since you also need the depth value of the node,
             // I strongly recommend you rewrite the find function here.
 
+            Node u = new Node(data, null, null, null);
+            Node w = root;
+            
+            boolean done = false;
+            int d = 0;
+
+            do {
+                if( u.data.compareTo(w.data) < 0 )  // left insert
+                {
+                    if( w.left == null )
+                    {
+                        w.left = u;
+                        u.parent = w;
+                        done = true;
+                    }
+                    else
+                    {
+                        w = w.left;
+                    }
+                }
+                else if( u.data.compareTo(w.data) > 0 )
+                {
+                    if( w.right == null )
+                    {
+                        w.right = u;
+                        w.parent = w;
+                        done = true;
+                    }
+                    else
+                        w = w.right;
+                }
+                else
+                    break;
+
+                d++;
+
+            } while(!done);
+            
             // -----------------------
 
             // TODO:
@@ -150,9 +241,67 @@ public class Scapegoat {
             // 3) check if the tree still satisfies the alpha-height-balanced property
             // 4) if not, find a scapegoat. Climb from the new node back up to the root and select the first node that isn't alpha-weight-balanced.
             // 5) rebuild the tree
+            if( done )
+            {
+                NodeCount++;
+            }
+
+            if (d > log32(NodeCount)) {
+                /* depth exceeded, find scapegoat */
+                w = scapegoatNode(u);
+                // Node w = u.parent;
+                // while (3*size(w) <= 2*size(w.parent))
+                //     w = w.parent;
+                rebuild(w.parent);
+            }
+
 
             // -----------------------
         }
+    }
+
+    T minValue(Node node)
+    {
+        T minv = node.data;
+        while (root.left != null)
+        {
+            minv = root.left.data;
+            root = root.left;
+        }
+        return minv;
+    }
+
+    Node deleteNode(Node node, T key)
+    {
+        /* Base Case: If the tree is empty */
+        if (node == null)
+            return node;
+ 
+        /* Otherwise, recur down the tree */
+        if (key.compareTo(node.data) < 0 )
+            node.left = deleteNode(node.left, key);
+        else if (key.compareTo(root.data) > 0)
+            node.right = deleteNode(node.right, key);
+ 
+        // if key is same as root's
+        // key, then This is the
+        // node to be deleted
+        else {
+            // node with only one child or no child
+            if (node.left == null)
+                return node.right;
+            else if (node.right == null)
+                return node.left;
+ 
+            // node with two children: Get the inorder
+            // successor (smallest in the right subtree)
+            node.data = minValue(node.right);
+ 
+            // Delete the inorder successor
+            node.right = deleteNode(node.right, node.data);
+        }
+ 
+        return node;
     }
 
 
@@ -168,7 +317,7 @@ public class Scapegoat {
         // this part is the same as the BST deletion
         // You first find the succNode, then replace the target node with the succNode.
         // rebuild the tree of required
-
+        root = deleteNode(root, data);
     }
 
 
