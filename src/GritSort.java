@@ -13,6 +13,8 @@
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class GritSort<Item extends Comparable<Item>> {
 
@@ -166,10 +168,48 @@ public class GritSort<Item extends Comparable<Item>> {
      * @return merged and sorted list
      *
      */
+
+    public static class Node<Item> {
+        Item val;
+        int row, pos;
+
+        public Node(Item val, int row, int pos) {
+            this.val = val;
+            this.row = row;
+            this.pos = pos;
+        }
+    }
+
     public ArrayList<Item> mergeChunk(ArrayList<ArrayList<Item>> bucket) {
         // TODO: part 1
 
-        return null;
+        ArrayList<Item> rst = new ArrayList<Item>();
+        if (bucket == null || bucket.size() == 0) {
+            return rst;
+        }
+
+        PriorityQueue<Node<Item>> pq = new PriorityQueue<>(bucket.size(), new Comparator<Node<Item>>() {
+            @Override
+            public int compare(Node<Item> o1, Node<Item> o2) {
+                return o1.val.compareTo(o2.val);
+            }
+        });
+
+        for (int i = 0; i < bucket.size(); i++) {
+            if (bucket.get(i).size() == 0) continue;
+
+            Node<Item> newNode = new Node<Item>(bucket.get(i).get(0), i, 0);
+            pq.offer(newNode);
+        }
+        while (!pq.isEmpty()) {
+            Node<Item> num = pq.poll();
+            rst.add(num.val);
+            if (num.pos < bucket.get(num.row).size() - 1) {
+                pq.offer(new Node<Item>(bucket.get(num.row).get(num.pos + 1), num.row, num.pos + 1));
+            }
+        }
+
+        return rst;
     }
 
 
