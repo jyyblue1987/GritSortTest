@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class SampleSortingTest <Item extends Comparable<Item>> {
 
-private double score;
+	private double score;
 	
 	public SampleSortingTest() {
 		score = 0;

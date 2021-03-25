@@ -115,11 +115,75 @@ public class Sorting<Item extends Comparable<Item>> {
      */
     public ArrayList<Item> insertionSort(ArrayList<Item> list) {
         // TODO: part 1
+        int n = list.size();
+        for (int i = 1; i < n; ++i) {
+            Item key = list.get(i);
+            int j = i - 1;
+ 
+            while(j >= 0 && greaterThan(list, j, i))
+                j--;
+
+            j++;
+            if( j < i )
+                swap(list, i, j);
+        }
 
         return list;
     }
 
+    public void merge(ArrayList<Item> list, int l, int m, int r)
+    {
+        //Below is the mergedarray that will be sorted array Array[i-m] , Array[(m+1)-r]
+        ArrayList<Item> mergedSortedArray = new ArrayList<Item>();
+        
+        int leftIndex = l;
+        int rightIndex = m+1;
+        
+        while(leftIndex<=m && rightIndex<=r){
+            if( lessThan(list, leftIndex, rightIndex) ){
+                mergedSortedArray.add(list.get(leftIndex));
+                leftIndex++;
+            }else{
+                mergedSortedArray.add(list.get(rightIndex));
+                rightIndex++;
+            }
+        }       
+        
+        //Either of below while loop will execute
+        while(leftIndex<=m){
+            mergedSortedArray.add(list.get(leftIndex));
+            leftIndex++;
+        }
+        
+        while(rightIndex<=r){
+            mergedSortedArray.add(list.get(rightIndex));
+            rightIndex++;
+        }
+        
+        int i = 0;
+        int j = l;
+        //Setting sorted array to original one
+        while(i<mergedSortedArray.size()){
+            list.set(j, mergedSortedArray.get(i++));
+            j++;
+        }
+    }
 
+    void mergeSort(ArrayList<Item> list, int l, int r)
+    {
+        if (l < r && (r - l) >= 1) {
+            // Find the middle point
+            int m = (r + l) / 2;
+ 
+            // Sort first and second halves
+            mergeSort(list, l, m);
+            mergeSort(list, m + 1, r);
+ 
+            // Merge the sorted halves
+            merge(list, l, m, r);
+        }
+    }
+ 
     /**
      *
      * Sorts the list in ascending order using Merge Sort.
@@ -128,6 +192,7 @@ public class Sorting<Item extends Comparable<Item>> {
      */
     public ArrayList<Item> mergeSort(ArrayList<Item> list) {
         // TODO: part 1
+        mergeSort(list, 0, list.size() - 1);
 
         return list;
     }
