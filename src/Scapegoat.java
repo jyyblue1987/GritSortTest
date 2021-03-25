@@ -186,7 +186,7 @@ public class Scapegoat {
         if (root == null) {
             root = new Node(data, null, null, null);
             NodeCount ++;
-            MaxNodeCount++;
+            MaxNodeCount = Math.max(MaxNodeCount, NodeCount);
         } else {
             // TODO:
             // -----------------------
@@ -253,7 +253,7 @@ public class Scapegoat {
                 /* depth exceeded, find scapegoat */
                 w = scapegoatNode(u.parent);
                 // if( data.a != 193 )
-                    rebuild(w.parent);
+                rebuild(w.parent);
             }
 
             // -----------------------
@@ -265,6 +265,8 @@ public class Scapegoat {
             print_tree();
             NodeCount = real_size;
         }
+
+        MaxNodeCount = Math.max(MaxNodeCount, NodeCount);
     }
 
     T minValue(Node node)
@@ -315,6 +317,42 @@ public class Scapegoat {
         return node;
     }
 
+    private Node remove(Node node)
+    {
+        if( node == null )
+            return null;
+
+        Node parent = node.parent;
+
+        Node succ_node = succNode(node);
+        if( succ_node == null )
+        {
+            NodeCount--;
+            if( parent == null ) // root
+            {
+                root = node.left;
+                root.parent = null;
+                return root;
+            }
+            else
+            {               
+                if( node == parent.right )
+                    parent.right = node.left;
+                else
+                    parent.left = node.left;
+                
+                if( node.left != null )
+                    node.left.parent = parent;
+                return node.left;
+            }
+        }
+
+        node.data = succ_node.data;
+        
+        remove(succ_node);
+
+        return node;
+    }
 
 
     /**
@@ -329,7 +367,13 @@ public class Scapegoat {
         // this part is the same as the BST deletion
         // You first find the succNode, then replace the target node with the succNode.
         // rebuild the tree of required
-        root = deleteNode(root, data);
+        Node node = find(data);
+        if( node == null )
+            return;
+
+        remove(node);
+
+        // root = deleteNode(root, data);
 
         int real_size = size(root);
         if( NodeCount != real_size )
