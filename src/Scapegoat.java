@@ -375,12 +375,12 @@ public class Scapegoat {
 
         // root = deleteNode(root, data);
 
-        int real_size = size(root);
-        if( NodeCount != real_size )
-        {
-            print_tree();
-            NodeCount = real_size;
-        }
+        // int real_size = size(root);
+        // if( NodeCount != real_size )
+        // {
+        //     print_tree();
+        //     NodeCount = real_size;
+        // }
 
         // rebuild
         double threshold_node_count = threshold * MaxNodeCount;
@@ -498,13 +498,13 @@ public class Scapegoat {
     {
         if(node == null)
             return;
-        print_tree(node.left, depth + 1);
+        print_tree(node.right, depth + 1);
         for(int i = 0; i < depth; i++)
         {
             System.out.print("   ");
         }
         System.out.println(node.data.a);
-        print_tree(node.right, depth + 1);
+        print_tree(node.left, depth + 1);
     }
     public void print_tree()
     {
