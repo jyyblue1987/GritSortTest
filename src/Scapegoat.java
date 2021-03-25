@@ -250,7 +250,7 @@ public class Scapegoat {
                 MaxNodeCount++;
             }
 
-            if (d > getHeightBalanced(MaxNodeCount)) {
+            if (d > getHeightBalanced(NodeCount)) {
                 /* depth exceeded, find scapegoat */
                 w = scapegoatNode(u);
                 // w = u.parent;
@@ -280,7 +280,7 @@ public class Scapegoat {
         /* Base Case: If the tree is empty */
         if (node == null)
             return node;
- 
+        
         /* Otherwise, recur down the tree */
         if (key.compareTo(node.data) < 0 )
             node.left = deleteNode(node.left, key);
@@ -292,14 +292,13 @@ public class Scapegoat {
         // node to be deleted
         else {
             NodeCount--;
+            
             // node with only one child or no child
             if (node.left == null)
                 return node.right;
             else if (node.right == null)
                 return node.left;
  
-            // node with two children: Get the inorder
-            // successor (smallest in the right subtree)
             node.data = minValue(node.right);
  
             // Delete the inorder successor
@@ -308,6 +307,7 @@ public class Scapegoat {
  
         return node;
     }
+
 
 
     /**
@@ -322,7 +322,15 @@ public class Scapegoat {
         // this part is the same as the BST deletion
         // You first find the succNode, then replace the target node with the succNode.
         // rebuild the tree of required
+
         root = deleteNode(root, data);
+
+        // rebuild
+        if( NodeCount <= threshold * MaxNodeCount )
+        {
+            root = rebuild(root);
+            // MaxNodeCount = NodeCount;
+        }
     }
 
 
@@ -349,7 +357,7 @@ public class Scapegoat {
         nodes.add(node);
         if(node.right != null){
             nodes.addAll(inorder(node.right));
-        }
+        } 
         return nodes;
     }
 
