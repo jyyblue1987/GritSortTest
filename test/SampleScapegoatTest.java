@@ -91,6 +91,9 @@ public class SampleScapegoatTest {
 			else if (string[0].equals("print")) {
 				String result = "preorder: " + tree.preorder(tree.root()) + "inorder: " + tree.inorder(tree.root());
 				if (! result.equals(outputs.get(cnt))) {
+					System.out.println("Result: " + result);
+					System.out.println("Expected: " + outputs.get(cnt));
+					
 					correct = 0;
 				}
 				cnt += 1;

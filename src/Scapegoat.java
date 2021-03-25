@@ -169,10 +169,12 @@ public class Scapegoat {
         return mid;
     }
 
-    private static final int log32(int q) 
+    private double getHeightBalanced(int q) 
     {
-        final double log23 = 2.4663034623764317;
-        return (int)Math.ceil(log23*Math.log(q));
+        final double log_alpha = Math.log(1/threshold);
+        double h = Math.log(q) / log_alpha;
+        
+        return h;
     }
 
     /**
@@ -186,6 +188,7 @@ public class Scapegoat {
         if (root == null) {
             root = new Node(data, null, null, null);
             NodeCount ++;
+            MaxNodeCount++;
         } else {
             // TODO:
             // -----------------------
@@ -218,7 +221,7 @@ public class Scapegoat {
                     if( w.right == null )
                     {
                         w.right = u;
-                        w.parent = w;
+                        u.parent = w;
                         done = true;
                     }
                     else
@@ -244,15 +247,16 @@ public class Scapegoat {
             if( done )
             {
                 NodeCount++;
+                MaxNodeCount++;
             }
 
-            if (d > log32(NodeCount)) {
+            if (d > getHeightBalanced(MaxNodeCount)) {
                 /* depth exceeded, find scapegoat */
                 w = scapegoatNode(u);
-                // Node w = u.parent;
+                // w = u.parent;
                 // while (3*size(w) <= 2*size(w.parent))
                 //     w = w.parent;
-                rebuild(w.parent);
+                rebuild(w);
             }
 
 
@@ -287,6 +291,7 @@ public class Scapegoat {
         // key, then This is the
         // node to be deleted
         else {
+            NodeCount--;
             // node with only one child or no child
             if (node.left == null)
                 return node.right;
