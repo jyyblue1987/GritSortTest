@@ -263,10 +263,10 @@ public class Scapegoat {
     T minValue(Node node)
     {
         T minv = node.data;
-        while (root.left != null)
+        while (node.left != null)
         {
-            minv = root.left.data;
-            root = root.left;
+            minv = node.left.data;
+            node = node.left;
         }
         return minv;
     }
@@ -280,7 +280,7 @@ public class Scapegoat {
         /* Otherwise, recur down the tree */
         if (key.compareTo(node.data) < 0 )
             node.left = deleteNode(node.left, key);
-        else if (key.compareTo(root.data) > 0)
+        else if (key.compareTo(node.data) > 0)
             node.right = deleteNode(node.right, key);
  
         // if key is same as root's
