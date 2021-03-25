@@ -41,14 +41,22 @@ public class GritSort<Item extends Comparable<Item>> {
     public ArrayList<Item> grit(ArrayList<Item> list) {
         /*
             TODO: part 1
-            TODO: STEP 1: implement and call makeChunks on list to divide the list into the sorted chunks.
+            TODO: STEP 1: implement and call makeChunks on list to divide the list into the sorted chunks.            
             TODO: STEP 1.5: make the required number of buckets(can differ from implementation to implementation) and
             TODO            put each chunk into a bucket of proper size.
             TODO: STEP 2: implement and call mergeChunk to merge the chunks in a bucket. do this for every bucket
             TODO: STEP 3: merge the buckets and return the elements of the merged buckets as a list
          */
+        ArrayList<ArrayList<Item>> chunks = makeChunks(list);
+        HashMap<Integer, ArrayList<ArrayList<Item>>> buckets = makeBuckets(chunks);
 
-        return list;
+        ArrayList<ArrayList<Item>> sortedBuckets = new ArrayList<ArrayList<Item>>();
+		for (Integer k : buckets.keySet())
+            sortedBuckets.add(mergeChunk(buckets.get(k)));
+
+        ArrayList<Item> sorted_list = mergeChunk(sortedBuckets);
+
+        return sorted_list;
     }
 
     /**
