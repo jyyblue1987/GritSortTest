@@ -125,7 +125,9 @@ public class Sorting<Item extends Comparable<Item>> {
 
             j++;
             if( j < i )
-                swap(list, i, j);
+            {
+                list.add(j, list.remove(i));                
+            }
         }
 
         return list;
