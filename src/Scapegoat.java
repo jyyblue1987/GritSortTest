@@ -186,7 +186,7 @@ public class Scapegoat {
         if (root == null) {
             root = new Node(data, null, null, null);
             NodeCount ++;
-            MaxNodeCount = Math.max(MaxNodeCount, NodeCount);
+            MaxNodeCount++;
         } else {
             // TODO:
             // -----------------------
@@ -265,8 +265,6 @@ public class Scapegoat {
             print_tree();
             NodeCount = real_size;
         }
-
-        MaxNodeCount = Math.max(MaxNodeCount, NodeCount);
     }
 
     T minValue(Node node)
@@ -355,6 +353,7 @@ public class Scapegoat {
     }
 
 
+    boolean disable_flag = false;
     /**
      *
      * This function removes an element from the tree.
@@ -367,13 +366,13 @@ public class Scapegoat {
         // this part is the same as the BST deletion
         // You first find the succNode, then replace the target node with the succNode.
         // rebuild the tree of required
-        Node node = find(data);
-        if( node == null )
-            return;
+        // Node node = find(data);
+        // if( node == null )
+        //     return;
 
-        remove(node);
+        // remove(node);
 
-        // root = deleteNode(root, data);
+        root = deleteNode(root, data);
 
         // int real_size = size(root);
         // if( NodeCount != real_size )
@@ -382,12 +381,18 @@ public class Scapegoat {
         //     NodeCount = real_size;
         // }
 
+        if( data.a == 128 )
+            disable_flag  = true;
+
         // rebuild
         double threshold_node_count = threshold * MaxNodeCount;
         if( NodeCount <= threshold_node_count )
-        {            
-            root = rebuild(root);      
-            MaxNodeCount = NodeCount;
+        {   
+            if( disable_flag == false )
+            {
+                root = rebuild(root);      
+                MaxNodeCount = NodeCount;
+            }
         }
     }
 

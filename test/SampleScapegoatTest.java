@@ -86,13 +86,13 @@ public class SampleScapegoatTest {
 				tree.add(new T(Integer.parseInt(string[1])));
 			}
 			else if (string[0].equals("remove")) {
-				if(string[1].equals("70") )
+				if(string[1].equals("128") )
 				{
-					string[1] = "70";
+					string[1] = "128";
 					tree.print_tree();
 				}
 				tree.remove(new T(Integer.parseInt(string[1])));
-				if(string[1].equals("70") )
+				if(string[1].equals("128") )
 				{
 					tree.print_tree();
 				}
