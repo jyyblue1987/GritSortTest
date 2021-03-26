@@ -352,8 +352,19 @@ public class Scapegoat {
         return node;
     }
 
+    private int height(Node node)
+    {
+        if( node == null )
+            return 0;
+        
+        if( node.left == null && node.right == null )
+            return 0;
 
-    boolean disable_flag = false;
+        return Math.max(height(node.left), height(node.right)) + 1;
+    }
+
+
+    // boolean disable_flag = false;
     /**
      *
      * This function removes an element from the tree.
@@ -381,14 +392,16 @@ public class Scapegoat {
         //     NodeCount = real_size;
         // }
 
-        if( data.a == 128 )
-            disable_flag  = true;
+        // if( data.a == 128 )
+        //     disable_flag  = true;
 
         // rebuild
         double threshold_node_count = threshold * MaxNodeCount;
-        if( NodeCount <= threshold_node_count )
+        if( NodeCount <= threshold_node_count)
         {   
-            if( disable_flag == false )
+            double h = getHeightBalanced(NodeCount);
+            double d = height(root);
+            if( d > h )
             {
                 root = rebuild(root);      
                 MaxNodeCount = NodeCount;
