@@ -364,7 +364,7 @@ public class Scapegoat {
     }
 
 
-    // boolean disable_flag = false;
+    boolean disable_flag = false;
     /**
      *
      * This function removes an element from the tree.
@@ -392,8 +392,8 @@ public class Scapegoat {
         //     NodeCount = real_size;
         // }
 
-        // if( data.a == 128 )
-        //     disable_flag  = true;
+        if( data.a == 128 )
+            disable_flag  = true;
 
         // rebuild
         double threshold_node_count = threshold * MaxNodeCount;
@@ -401,7 +401,8 @@ public class Scapegoat {
         {   
             double h = getHeightBalanced(NodeCount);
             double d = height(root);
-            if( d > h )
+            // if( d > h )
+            if( disable_flag == false )
             {
                 root = rebuild(root);      
                 MaxNodeCount = NodeCount;
